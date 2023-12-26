@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Policies\CategoryPolicy;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
@@ -19,7 +21,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+
+        return CategoryResource::collection(Category::all());
     }
 
     /**
@@ -27,6 +30,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+
         $category = Category::create([
             ...$request->validate([
                 'name' => 'required|string|max:20',
@@ -60,7 +64,6 @@ class CategoryController extends Controller
 
         return $category;
     }
-
 
     /**
      * Remove the specified resource from storage.

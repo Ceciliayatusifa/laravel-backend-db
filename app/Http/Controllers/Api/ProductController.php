@@ -12,9 +12,14 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProductResource::collection(Product::paginate(10));
+        $categoryId = $request->input('category_id');
+        $products = Product::when(
+            $categoryId,
+            fn ($query, $categoryId) => $query->categoryId($categoryId)
+        )->paginate()->load('category');
+        return ProductResource::collection($products);
     }
 
     /**
@@ -35,6 +40,7 @@ class ProductController extends Controller
 
         return $product;
     }
+
     /**
      * Display the specified resource.
      */
@@ -43,7 +49,6 @@ class ProductController extends Controller
         $product->load('category', 'user');
         return new ProductResource($product);
     }
-
 
     /**
      * Update the specified resource in storage.
